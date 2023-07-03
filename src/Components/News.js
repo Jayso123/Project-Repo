@@ -20,6 +20,14 @@ export class News extends Component {
       console.log(parsedData);
       this.setState({ articles: parsedData.articles });
     }
+
+    handlePreviousClick = ()=>{
+      console.log("previous");
+    }
+
+    handleNextClick = ()=>{
+      console.log("Next");
+    }
     
 
   render() {
@@ -36,6 +44,10 @@ export class News extends Component {
               newsUrl={element.url}/>
           </div>
         })}
+        </div>
+        <div className="container d-flex justify-content-between">
+        <button disabled={this.state.page<=1} type="button"  class="btn btn-dark" onClick={this.handlePreviousClick}>&larr; Pervious</button>
+        <button type="button" class="btn btn-dark" onClick={this.handleNextClick}>Next &rarr;</button>
         </div>
       </div>
     );
