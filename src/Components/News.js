@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
+import Spinner from "./spinner";
+
 
 export class News extends Component {
   constructor() {
     super();
     this.state = {
       articles: [],
-      loading: true,
+      loading: false,
       page: 1,
     };
   }
@@ -14,6 +16,7 @@ export class News extends Component {
   async componentDidMount() {
     console.log("cdm");
     let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=d672e6ec6f314124a5e4acd4b6c9d24b&pagae=1&pagesize=${this.props.pageSize}`;
+    this.setState({loading: true});
     let data = await fetch(url);
     console.log(data);
     let parsedData = await data.json();
@@ -21,6 +24,7 @@ export class News extends Component {
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
+      loading: false,
     });
   }
 
@@ -29,31 +33,35 @@ export class News extends Component {
     let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=d672e6ec6f314124a5e4acd4b6c9d24b&page=${
       this.state.page - 1
     }&pagesize=${this.props.pageSize}`;
+    this.setState({loading: true});
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
-    this.setState({ articles: parsedData.articles });
+   
     this.setState({
       page: this.state.page - 1,
+      articles: parsedData.articles,
+      loading: false,
     });
   };
 
   handleNextClick = async () => {
     console.log("Next");
-    if (
+    if (!(
       this.state.page + 1 >
       Math.ceil(this.totalResults / this.props.pageSize)
-    ) {
-    } else {
+    )){  
       let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=d672e6ec6f314124a5e4acd4b6c9d24b&page=${
         this.state.page + 1
       }&pagesize=${this.props.pageSize}`;
+      this.setState({loading: true});
       let data = await fetch(url);
       let parsedData = await data.json();
-      console.log(parsedData);
-      this.setState({ articles: parsedData.articles });
-      this.setState({
+      // this.setState({loading: false});
+        this.setState({
         page: this.state.page + 1,
+        articles: parsedData.articles,
+        loading: false,
       });
     }
   };
@@ -61,9 +69,10 @@ export class News extends Component {
   render() {
     return (
       <div className="container my-3">
-        <h2>NewsMonkey - Top Headlines</h2>
+        <h2 className="text-center">NewsMonkey - Top Headlines</h2>
+        {this.state.loading && <Spinner/>}
         <div className="row">
-          {this.state.articles.map((element) => {
+          {! this.state.loading && this.state.articles.map((element) => {
             return (
               <div className="col-md-4" key={element.url}>
                 <NewsItem
