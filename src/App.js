@@ -11,7 +11,7 @@ export default class app extends Component {
       <>
       <div>
        <NavBar/>
-       <News pageSize={5}/>
+       <News pageSize={5} country="in"/>
        {/* <MyComponent/> */}
       </div>
       </>
